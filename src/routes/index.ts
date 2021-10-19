@@ -1,8 +1,10 @@
-import { Router } from 'express';
-import { GitHubRouter } from './github';
-import { SignInRouter } from './signin';
+import { Router } from 'express'
+import { GitHubRouter } from './github'
+import { MessageRouter } from './message'
+import { SignInRouter } from './signin'
 
-export const router = Router()
+export const MainRouter = Router()
 
-router.use('/github', GitHubRouter)
-router.use('/signin', SignInRouter)
+MainRouter.use('/github', GitHubRouter)
+MainRouter.use('/signin', SignInRouter)
+MainRouter.use('/message', MessageRouter)

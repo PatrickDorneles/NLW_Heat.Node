@@ -1,27 +1,27 @@
-import { prisma } from './../../prisma/index';
-import { InternalServerError, Unauthorized } from 'http-errors';
-import axios from "axios"
-import { IAccessTokenResponse } from "../../models/auth/access-token-response"
-import { IUserResponse } from "../../models/auth/user-response"
+import axios from "axios";
+import { Unauthorized } from 'http-errors';
 import { sign } from 'jsonwebtoken';
+import { IAccessTokenResponse } from "../../models/auth/access-token-response";
+import { IUserResponse } from "../../models/auth/user-response";
+import { prisma } from './../../prisma/index';
 
 export class SignInService {
-    
+
     async execute(code: string) {
         const url = "https://github.com/login/oauth/access_token"
 
         try {
-            const { data: acessTokenResponse } = 
+            const { data: acessTokenResponse } =
                 await axios.post<IAccessTokenResponse>(url, null, {
-                params: {
-                    client_id: process.env.GH_CLIENT_ID,
-                    client_secret: process.env.GH_CLIENT_SECRET,
-                    code,
-                },
-                headers: {
-                    "Accept": "application/json"
-                }
-            })
+                    params: {
+                        client_id: process.env.GH_CLIENT_ID,
+                        client_secret: process.env.GH_CLIENT_SECRET,
+                        code,
+                    },
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                })
 
             const { data: githubUser } = await axios.get<IUserResponse>(`https://api.github.com/user`, {
                 headers: {
@@ -29,13 +29,13 @@ export class SignInService {
                 }
             })
 
-            let user = await prisma.user.findFirst({ 
+            let user = await prisma.user.findFirst({
                 where: {
                     github_id: githubUser.id
                 }
             })
 
-            if(!user) {
+            if (!user) {
                 user = await prisma.user.create({
                     data: {
                         github_id: githubUser.id,
@@ -58,6 +58,7 @@ export class SignInService {
             });
 
             return { token, user }
+
         } catch (error) {
             throw new Unauthorized("We couldn't authenticate you with Github")
         }
