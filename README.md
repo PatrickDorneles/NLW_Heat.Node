@@ -15,8 +15,8 @@ PORT=9090
 - [x]  Install Express, Prisma and Typescript
 - [x]  Configure Github OAuth
 - [x]  Create route login github
-- [ ]  Create route callback
-- [ ]  Auth user receiving the code
+- [x]  Create route callback
+- [x]  Auth user receiving the code
 - [ ]  Register message
 - [ ]  Configure websocket
 - [ ]  Retorne 3 last messages
@@ -69,5 +69,14 @@ datasource db {
 I configured a new OAuth App in my github account, it can be done in this page: https://github.com/settings/developers.
 Also configured Homepage URL to http://localhost:[myport] and Authorization callback URL to http://localhost:[myport]/signin/callback.
 
-### Creating login route
+### Creating login route and callback
 I started creating the basic folders that I use: *routes*, *services*, *middlewares* and *models*.
+
+Then I created both *signin* and *github* routes, on *github* route I made a redirect on get to authenticate with GitHub, and in *signin* the basic callback just to show the code that I wanted to get for testing purposes.
+### Creating user authentication using the code
+Then I created the post in the *signin* route to make the authentication.
+
+Installed the JWT library and the types definitions:
+```yarn add jsonwebtoken``` and ```yarn add @types/jsonwebtoken```
+
+Made the User model in prisma and generate the first migration: Creating User. After that just did the SigninService and added it to the signin route.
