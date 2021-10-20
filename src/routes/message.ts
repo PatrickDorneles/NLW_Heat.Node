@@ -6,12 +6,12 @@ import { GetLast3MessagesService } from './../services/messages/get-last-3-messa
 export const MessageRouter = Router()
 
 MessageRouter.post('/', authed, async (req, res, next) => {
-	const { text, user_id } = req.body
+	const { text, auth_user_id } = req.body
 
 	const service = new CreateMessageService()
 
 	try {
-		const message = await service.execute(text, user_id)
+		const message = await service.execute(text, auth_user_id)
 
 		res.send(message)
 	} catch (error) {

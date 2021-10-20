@@ -18,6 +18,153 @@ GH_CLIENT_SECRET=
 JWT_SECRET=
 ```
 
+## Routes and Socket Messages
+
+This application is both a Rest API and a Socket.io server, these are the routes and messages in the appliccation.
+
+### Github
+
+> public get '/github' => Redirect to Github to Login
+
+This route only redirects you to github so you can sign in and for testing purposes get the user code.
+
+### Signin
+
+> public get '/signin/callback' => Get the user code
+
+This route shows the user code so you can get it and sign in
+
+Response: A string with your user code
+
+> public post '/signin/authenticate' => Sign in
+
+On this route you send your user code so you can sing in into the application
+
+Request Body:
+
+```json
+{
+  "code": "[your user auth code]"
+}
+```
+
+Response:
+
+```json
+{
+  "token": "[jwt token]",
+  "user": {
+    "id": "[user id]",
+    "name": "John Doe",
+    "github_id": 99999999,
+    "avatar_url": "[avatar url]",
+    "login": "JohnDoe"
+  }
+}
+```
+
+### Message
+
+> private post '/message' => Create a message
+
+This route needs authentication, so you can only call it with a valid JWT on your authentication header. It creates a message and emits it to every connected user.
+
+Request Body:
+
+```json
+{
+  "text": "A random text message"
+}
+```
+
+Response:
+
+```json
+{
+  "id": "[message id]",
+  "text": "A random text message",
+  "created_at": "[message's datetime]",
+  "user_id": "[your user id]",
+  "user": {
+    "id": "[user id]",
+    "name": "John Doe",
+    "github_id": 99999999,
+    "avatar_url": "[avatar url]",
+    "login": "JohnDoe"
+  }
+}
+```
+
+Emits 'new_message':
+
+```json
+{
+  "text": "A random text message",
+  "created_at": "[message's datetime]",
+  "user_id": "[message's owner user id]",
+  "user": {
+    "name": "John Doe",
+    "avatar_url": "[avatar url]"
+  }
+}
+```
+
+> public get '/message/last3' => Get last 3 messages
+
+This route just return an array that has up to 3 messages.
+
+Response:
+
+```json
+[
+  {
+    "id": "[message id]",
+    "text": "A random text message",
+    "created_at": "[message's datetime]",
+    "user_id": "[your user id]",
+    "user": {
+      "id": "[user id]",
+      "name": "John Doe",
+      "github_id": 99999999,
+      "avatar_url": "[avatar url]",
+      "login": "JohnDoe"
+    }
+  },
+  {
+    "id": "[message id]",
+    "text": "Another random text message",
+    "created_at": "[message's datetime]",
+    "user_id": "[your user id]",
+    "user": {
+      "id": "[user id]",
+      "name": "John Doe",
+      "github_id": 99999999,
+      "avatar_url": "[avatar url]",
+      "login": "JohnDoe"
+    }
+  }
+]
+```
+
+### User
+
+> private get '/user/profile' => Returns your user profile
+
+This route just returns your user profile along with your messages
+
+Response:
+
+```json
+{
+  "id": "[user id]",
+  "name": "John Doe",
+  "github_id": 99999999,
+  "avatar_url": "[avatar url]",
+  "login": "JohnDoe",
+  "messages": []
+}
+```
+
 ## What was required
 
 - [x] Create project
@@ -29,7 +176,7 @@ JWT_SECRET=
 - [x] Register message
 - [x] Configure websocket
 - [x] Return last 3 messages
-- [ ] Create user profile
+- [x] Get user profile
 
 ## How I did it
 
@@ -116,3 +263,7 @@ Then I added a emit in the CreateMessageService, sending new messages to all con
 ### Fetching the last 3 messages
 
 The simplest task so far, I just made a new _GetLast3MessagesService_ and added a **get** route to use it
+
+### Getting user profile
+
+I added a _GetUserProfileService_ and a user router, then the get route so the user can get its own profile when signed in.

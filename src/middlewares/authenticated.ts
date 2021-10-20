@@ -17,7 +17,7 @@ export const authed = (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { sub } = verify(token, process.env.JWT_SECRET) as IPayload
 
-		req.body.user_id = sub
+		req.body.auth_user_id = sub
 
 		return next()
 	} catch (error) {
