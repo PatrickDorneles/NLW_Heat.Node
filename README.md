@@ -27,8 +27,8 @@ JWT_SECRET=
 - [x] Create route callback
 - [x] Auth user receiving the code
 - [x] Register message
-- [ ] Configure websocket
-- [ ] Retorne 3 last messages
+- [x] Configure websocket
+- [ ] Return 3 last messages
 - [ ] Create user profile
 
 ## How I did it
@@ -105,3 +105,10 @@ Made the User model in prisma and generate the first migration: Creating User. A
 ### Registering messages
 
 This task was really simple, first created the _authenticated_ middleware to only pass users that was authenticated to certain routes, and created the CreateMessageService and a new route for handling messages.
+Also created Message in the prisma models
+
+### Configuring websocket
+
+Installed socket.io using `yarn add socket.io` and its types using `yarn add -D @types/socket.io`, then moved all server content to a new _app.ts_ file and exported the app, http server and a new created io server.
+
+Then I added a emit in the CreateMessageService, sending new messages to all connected sockets, after that for testing created in the _public_ folder a _index.html_ with the socket.io CDN to test the server socket messages.

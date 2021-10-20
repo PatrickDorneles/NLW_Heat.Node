@@ -1,24 +1,7 @@
-import 'dotenv/config'
-import express from 'express'
-import { errorHandler } from './middlewares/error-handler'
-import { httpErrorHandler } from './middlewares/http-error-handler'
-import { MainRouter } from './routes'
+import { server } from './app'
 
-const PORT = 9090
+const PORT = process.env.PORT || 9090
 
-const app = express()
-
-app.use(express.json())
-
-app.get('/github', (req, res) => {
-	res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GH_CLIENT_ID}`)
-})
-
-app.use(MainRouter)
-
-app.use(httpErrorHandler)
-app.use(errorHandler)
-
-app.listen(PORT, () => {
+server.listen(PORT, () => {
 	console.log(`🚀 Skyrocketing on https://localhost:${PORT}`)
 })
