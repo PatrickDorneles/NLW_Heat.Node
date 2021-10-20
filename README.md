@@ -28,7 +28,7 @@ JWT_SECRET=
 - [x] Auth user receiving the code
 - [x] Register message
 - [x] Configure websocket
-- [ ] Return 3 last messages
+- [x] Return last 3 messages
 - [ ] Create user profile
 
 ## How I did it
@@ -112,3 +112,7 @@ Also created Message in the prisma models
 Installed socket.io using `yarn add socket.io` and its types using `yarn add -D @types/socket.io`, then moved all server content to a new _app.ts_ file and exported the app, http server and a new created io server.
 
 Then I added a emit in the CreateMessageService, sending new messages to all connected sockets, after that for testing created in the _public_ folder a _index.html_ with the socket.io CDN to test the server socket messages.
+
+### Fetching the last 3 messages
+
+The simplest task so far, I just made a new _GetLast3MessagesService_ and added a **get** route to use it
